@@ -1,54 +1,40 @@
-let input_box = document.querySelector("#input-box")               
-let city = document.querySelector("#city");
-let date = document.querySelector("#date");
-let temp = document.querySelector("#temp");
-let min_max = document.querySelector("#min-max");
-let weather = document.querySelector("#weather");
-let precip_humidity = document.querySelector("#precip-humidity");
-let wind = document.querySelector("#wind");
+let input_box = document.querySelector("#input-box");
 let btn = document.querySelector("#btn");
 let weather_box = document.querySelector(".weather-box");
 
-btn.addEventListener("click", event=> {               
-
-  if (input_box.value) {   
+btn.addEventListener("click", (event) => {
+  if (input_box.value) {
     event.preventDefault();
-    weather_box.classList.add("show");     
+    weather_box.classList.add("show");
   }
 
-  let inputdata = input_box.value;     
+  let inputdata = input_box.value;
+  const key = "97c4172136a167aba312bf6966d97bb5";
+  const ulr = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
 
-  async function weatherdata() {
-    let weather = fetch(`http://api.weatherstack.com/current?access_key=7be008b27906ed140672c7ced79634dc&query=${inputdata}`);
+  async function weatherdata() {       
+    let response = await fetch(ulr + inputdata + `&appid=${key}`);
+    let data = await response.json();
+    console.log(data) 
 
-    let response = await weather;
-    let data = response.json();
+    let dt = data.dt;
 
-    return data;
+    // Convert Unix timestamp to milliseconds by multiplying with 1000
+    let dtMilliseconds = dt * 1000;
+
+    // Create a new Date object using the milliseconds
+    let dtObj = new Date(dtMilliseconds);
+
+    // Format the date as a string
+    let formattedDate = dtObj.toLocaleString();
+
+    document.querySelector("#city").innerHTML = `${data.name}, ${data.sys.country}`;
+    document.querySelector("#date").innerHTML = `${formattedDate}`;
+    document.querySelector("#temp").innerHTML = `${data.main.temp} °C`;
+    document.querySelector("#min-max").innerHTML = `${data.main.temp_min}&deg; C(min) / ${data.main.temp_max}&deg; C(max)`;
+    document.querySelector("#speed-humidity").innerHTML = `Speed :${data.wind.speed}  Humidity :${data.main.humidity}`;
+    document.querySelector("#weather").innerHTML = `${data.weather[0].main}`;
   }
-
-  let allweatherdata = weatherdata();
-
-  allweatherdata.then(function (resolve) {
-    console.log(resolve);
-
-    let mycity = `${resolve.request.query}`;
-    let mydate = `${resolve.location.localtime}`;
-    let mytemp = `${resolve.current.temperature} °C`;
-    let my_min_max = `${resolve.current.temperature}&deg; C(min) / ${resolve.current.temperature}&deg; C(max)`;
-    let my_precip_humidity = `Precip :${resolve.current.precip}  Humidity :${resolve.current.humidity}`;
-    let my_wind = `Wind :${resolve.current.wind_speed}`;
-    let weather_status = `${resolve.current.weather_descriptions[0]}`;
-
-    city.innerHTML = mycity;
-    date.innerHTML = mydate;
-    temp.innerHTML = mytemp;
-    min_max.innerHTML = my_min_max;
-    precip_humidity.innerHTML = my_precip_humidity;
-    wind.innerHTML = my_wind;
-    weather.innerHTML = weather_status;
-  });                
- 
+  weatherdata(); 
 });
-
 

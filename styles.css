@@ -76,21 +76,21 @@
 }
 
 .location {
-    font-weight: bold;
+    font-weight: bold;        
 }
 
 .current-weather {
     padding: 20px;
 }
 
-.temp {
+.temp {                     
     font-size: 50pt;
     font-weight: 700;
-    margin: 20px 0;
+    margin: 10px 0 30px;      
     text-shadow: 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.min-max, .precip-humidity, .wind, .weather {  
+.min-max, .speed-humidity, .wind, .weather {   
     font-size: 12pt;
     font-weight: 700;
 }
